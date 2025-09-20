@@ -124,6 +124,7 @@ window.addEventListener('resize', () => {
 // Register custom text node
 G6.registerNode('text-only', {
     draw(cfg, group) {
+        // Add background rect for selection highlight and better interaction
         const textShape = group.addShape('text', {
             attrs: {
                 text: cfg.label || 'Text',
@@ -134,42 +135,76 @@ G6.registerNode('text-only', {
                 fill: '#333',
                 fontSize: 16,
                 fontFamily: 'Arial',
-                cursor: 'pointer',
+                cursor: 'move', // Change cursor to indicate draggable
             },
             name: 'text-shape',
         });
         
-        // Add invisible background for better interaction
         const textBox = textShape.getBBox();
-        group.addShape('rect', {
+        const padding = 8;
+        
+        // Add background rect that will show when selected
+        const backgroundRect = group.addShape('rect', {
             attrs: {
-                x: textBox.x - 10,
-                y: textBox.y - 10,
-                width: textBox.width + 20,
-                height: textBox.height + 20,
+                x: textBox.x - padding,
+                y: textBox.y - padding,
+                width: textBox.width + (padding * 2),
+                height: textBox.height + (padding * 2),
                 fill: 'transparent',
                 stroke: 'transparent',
-                cursor: 'pointer',
+                lineWidth: 2,
+                radius: 4,
+                cursor: 'move',
             },
             name: 'text-bg',
         });
+        
+        // Put the background behind the text
+        backgroundRect.toBack();
         
         return textShape;
     },
     update(cfg, node) {
         const group = node.getContainer();
         const textShape = group.find(e => e.get('name') === 'text-shape');
-        const textBg = group.find(e => e.get('name') === 'text-bg');
+        const backgroundRect = group.find(e => e.get('name') === 'text-bg');
         
-        textShape.attr('text', cfg.label);
+        if (textShape) {
+            textShape.attr('text', cfg.label);
+        }
         
-        const textBox = textShape.getBBox();
-        textBg.attr({
-            x: textBox.x - 10,
-            y: textBox.y - 10,
-            width: textBox.width + 20,
-            height: textBox.height + 20,
-        });
+        if (backgroundRect) {
+            const textBox = textShape.getBBox();
+            const padding = 8;
+            backgroundRect.attr({
+                x: textBox.x - padding,
+                y: textBox.y - padding,
+                width: textBox.width + (padding * 2),
+                height: textBox.height + (padding * 2),
+            });
+        }
+    },
+    setState(name, value, node) {
+        const group = node.getContainer();
+        const backgroundRect = group.find(e => e.get('name') === 'text-bg');
+        
+        if (name === 'selected') {
+            if (value) {
+                // When selected
+                backgroundRect.attr({
+                    stroke: '#1890ff',
+                    shadowColor: '#1890ff',
+                    shadowBlur: 10,
+                });
+            } else {
+                // When deselected
+                backgroundRect.attr({
+                    stroke: 'transparent',
+                    shadowColor: null,
+                    shadowBlur: 0,
+                });
+            }
+        }
     },
 });
 
