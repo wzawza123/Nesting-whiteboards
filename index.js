@@ -27,15 +27,18 @@ const graph = new G6.Graph({
         style: {
             fill: '#fff',
             stroke: '#333',
-            radius: 4,
-            lineWidth: 1,
+            radius: 6,
+            lineWidth: 1.5,
         },
         labelCfg: {
             style: {
                 fill: '#333',
-                fontSize: 14,
+                fontSize: 16,
+                fontFamily: 'Arial',
             },
         },
+        // Set default size larger
+        size: [160, 80],
     },
     // Default edge style
     defaultEdge: {
@@ -68,7 +71,38 @@ let currentGraphData = {
     id: 'root',
     nodes: [],
     edges: [],
-    parentNode: null
+    parentNode: null,
+    label: 'Root'
+};
+
+// Function to update navigation path
+const updateNavigationPath = () => {
+    const navBar = document.getElementById('navigation-bar');
+    const pathElements = [];
+    
+    // Add root
+    pathElements.push('<span class="nav-node">Root</span>');
+    
+    // Add intermediate nodes from stack
+    graphStack.forEach((graph, index) => {
+        const node = graph.nodes.find(n => n.id === graphStack[index + 1]?.parentNode);
+        if (node) {
+            pathElements.push('<span class="nav-separator">/</span>');
+            pathElements.push(`<span class="nav-node">${node.label || 'Unnamed'}</span>`);
+        }
+    });
+    
+    // Add current node if in a subgraph
+    if (currentGraphData.parentNode) {
+        const parentGraph = graphStack[graphStack.length - 1];
+        const parentNode = parentGraph.nodes.find(n => n.id === currentGraphData.parentNode);
+        if (parentNode) {
+            pathElements.push('<span class="nav-separator">/</span>');
+            pathElements.push(`<span class="nav-current">${parentNode.label || 'Unnamed'}</span>`);
+        }
+    }
+    
+    navBar.querySelector('.nav-path').innerHTML = pathElements.join('');
 };
 
 // Function to save current graph state
@@ -238,7 +272,6 @@ graph.on('canvas:click', (ev) => {
             x: point.x,
             y: point.y,
             label: 'Right click to edit',
-            size: [120, 60],
         });
         currentMode = 'default';
     } else if (currentMode === 'addText') {
@@ -342,6 +375,20 @@ graph.on('node:contextmenu', (ev) => {
     });
 });
 
+// Function to update back button text
+const updateBackButton = () => {
+    if (graphStack.length > 0) {
+        const parentGraph = graphStack[graphStack.length - 1];
+        const parentNode = parentGraph.nodes.find(
+            node => node.id === currentGraphData.parentNode
+        );
+        backButton.innerHTML = `← Back to ${parentNode ? parentNode.label || 'Unnamed' : 'Parent'}`;
+        backButton.style.display = 'block';
+    } else {
+        backButton.style.display = 'none';
+    }
+};
+
 // Handle double click to enter subgraph
 graph.on('node:dblclick', (ev) => {
     const node = ev.item;
@@ -371,8 +418,9 @@ graph.on('node:dblclick', (ev) => {
     graph.data(currentGraphData);
     graph.render();
     
-    // Show back button
-    backButton.style.display = 'block';
+    // Update navigation
+    updateNavigationPath();
+    updateBackButton();
 });
 
 // Handle back button click
@@ -395,10 +443,9 @@ backButton.addEventListener('click', () => {
         graph.data(currentGraphData);
         graph.render();
         
-        // Hide back button if we're at root level
-        if (graphStack.length === 0) {
-            backButton.style.display = 'none';
-        }
+        // Update navigation
+        updateNavigationPath();
+        updateBackButton();
     }
 });
 
@@ -494,8 +541,9 @@ document.getElementById('loadFile').addEventListener('change', (event) => {
                 graph.data(currentGraphData);
                 graph.render();
                 
-                // Update back button visibility
-                backButton.style.display = graphStack.length > 0 ? 'block' : 'none';
+                // Update navigation
+                updateNavigationPath();
+                updateBackButton();
                 
                 // Clear file input
                 event.target.value = '';

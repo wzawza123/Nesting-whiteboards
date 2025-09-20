@@ -69,6 +69,54 @@
         }
     </style>
     <div id="container"></div>
+    <div id="navigation-bar">
+        <span class="nav-path">Root</span>
+    </div>
+    <style>
+        #navigation-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 12px 24px;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+            text-align: center;
+            min-width: 300px;
+        }
+        .nav-path {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .nav-separator {
+            color: #999;
+            margin: 0 12px;
+            font-size: 18px;
+        }
+        .nav-node {
+            color: #1890ff;
+            font-weight: 500;
+            font-size: 16px;
+            cursor: default;
+        }
+        .nav-node:hover {
+            color: #40a9ff;
+        }
+        .nav-current {
+            color: #333;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        #navigation-bar:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            transition: box-shadow 0.3s ease;
+        }
+    </style>
     <script src="index.js"></script>
 </body>
 </html>
