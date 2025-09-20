@@ -75,20 +75,62 @@ let currentGraphData = {
     label: 'Root'
 };
 
-// Function to update navigation path
+// Function to navigate to specific level
+const navigateToLevel = (level) => {
+    if (level < 0 || level > graphStack.length) return;
+    
+    // Save current state
+    updateCurrentGraphData();
+    
+    if (level === 0) {
+        // Navigate to root
+        while (graphStack.length > 0) {
+            const currentState = graphStack.pop();
+            const parentNode = currentState.nodes.find(
+                node => node.id === currentGraphData.parentNode
+            );
+            if (parentNode) {
+                parentNode.subGraph = {...currentGraphData};
+            }
+            currentGraphData = currentState;
+        }
+    } else {
+        // Navigate to specific level
+        while (graphStack.length > level) {
+            const currentState = graphStack.pop();
+            const parentNode = currentState.nodes.find(
+                node => node.id === currentGraphData.parentNode
+            );
+            if (parentNode) {
+                parentNode.subGraph = {...currentGraphData};
+            }
+            currentGraphData = currentState;
+        }
+    }
+    
+    // Update graph and UI
+    graph.data(currentGraphData);
+    graph.render();
+    updateNavigationPath();
+    updateBackButton();
+};
+
+// Function to update navigation path with click handlers
 const updateNavigationPath = () => {
     const navBar = document.getElementById('navigation-bar');
     const pathElements = [];
     
-    // Add root
-    pathElements.push('<span class="nav-node">Root</span>');
+    // Add root with click handler
+    pathElements.push(`<span class="nav-node" onclick="window._navigateToLevel(0)">Root</span>`);
     
-    // Add intermediate nodes from stack
+    // Add intermediate nodes from stack with click handlers
     graphStack.forEach((graph, index) => {
         const node = graph.nodes.find(n => n.id === graphStack[index + 1]?.parentNode);
         if (node) {
             pathElements.push('<span class="nav-separator">/</span>');
-            pathElements.push(`<span class="nav-node">${node.label || 'Unnamed'}</span>`);
+            pathElements.push(
+                `<span class="nav-node" onclick="window._navigateToLevel(${index + 1})">${node.label || 'Unnamed'}</span>`
+            );
         }
     });
     
@@ -104,6 +146,9 @@ const updateNavigationPath = () => {
     
     navBar.querySelector('.nav-path').innerHTML = pathElements.join('');
 };
+
+// Expose navigation function to window for onclick handlers
+window._navigateToLevel = navigateToLevel;
 
 // Function to save current graph state
 const saveGraphState = () => {
