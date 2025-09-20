@@ -411,3 +411,99 @@ graph.on('canvas:click', () => {
         currentMode = 'default';
     }
 });
+
+// Function to get complete graph data including subgraphs
+const getCompleteGraphData = (graphData) => {
+    const nodes = graphData.nodes.map(node => {
+        const newNode = { ...node };
+        if (newNode.subGraph) {
+            newNode.subGraph = getCompleteGraphData(newNode.subGraph);
+        }
+        return newNode;
+    });
+    
+    return {
+        ...graphData,
+        nodes,
+        edges: graphData.edges.map(edge => ({ ...edge }))
+    };
+};
+
+// Function to restore graph data including subgraphs
+const restoreGraphData = (data) => {
+    // Restore nodes with their subgraphs
+    const nodes = data.nodes.map(node => {
+        const newNode = { ...node };
+        if (newNode.subGraph) {
+            newNode.subGraph = restoreGraphData(newNode.subGraph);
+        }
+        return newNode;
+    });
+
+    return {
+        ...data,
+        nodes,
+        edges: data.edges.map(edge => ({ ...edge }))
+    };
+};
+
+// Save graph data
+document.getElementById('saveGraph').addEventListener('click', () => {
+    // Update current graph state before saving
+    updateCurrentGraphData();
+    
+    // Get complete data including all subgraphs
+    const completeData = {
+        currentGraph: getCompleteGraphData(currentGraphData),
+        graphStack: graphStack.map(graph => getCompleteGraphData(graph))
+    };
+    
+    // Convert to JSON and create blob
+    const jsonString = JSON.stringify(completeData, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    
+    // Create download link and trigger download
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'graph-data.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+});
+
+// Load graph data
+document.getElementById('loadGraph').addEventListener('click', () => {
+    document.getElementById('loadFile').click();
+});
+
+document.getElementById('loadFile').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const loadedData = JSON.parse(e.target.result);
+                
+                // Restore complete data structure
+                currentGraphData = restoreGraphData(loadedData.currentGraph);
+                graphStack = loadedData.graphStack.map(graph => restoreGraphData(graph));
+                
+                // Update graph display
+                graph.data(currentGraphData);
+                graph.render();
+                
+                // Update back button visibility
+                backButton.style.display = graphStack.length > 0 ? 'block' : 'none';
+                
+                // Clear file input
+                event.target.value = '';
+            } catch (error) {
+                console.error('Error loading graph data:', error);
+                alert('Error loading graph data. Please check if the file is valid.');
+            }
+        };
+        reader.readAsText(file);
+    }
+});

@@ -44,7 +44,30 @@
         <button id="addText">Add Text</button>
         <button id="addEdge">Add Arrow</button>
         <button id="delete">Delete Selected</button>
+        <div class="separator"></div>
+        <button id="saveGraph">Save</button>
+        <button id="loadGraph">Load</button>
+        <input type="file" id="loadFile" style="display: none" accept=".json">
     </div>
+    <style>
+        .separator {
+            display: inline-block;
+            width: 1px;
+            height: 20px;
+            background: #ccc;
+            margin: 0 10px;
+            vertical-align: middle;
+        }
+        #saveGraph, #loadGraph {
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+        }
+        #saveGraph:hover, #loadGraph:hover {
+            background-color: #40a9ff;
+        }
+    </style>
     <div id="container"></div>
     <script src="index.js"></script>
 </body>
