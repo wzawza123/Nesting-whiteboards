@@ -72,6 +72,116 @@
     <div id="navigation-bar">
         <span class="nav-path">Root</span>
     </div>
+    <div id="context-menu" class="context-menu" style="display: none;">
+        <div class="menu-item" data-action="edit">
+            <i class="menu-icon">✏️</i>Edit Text
+        </div>
+        <div class="menu-item" data-action="font-size">
+            <i class="menu-icon">📝</i>Font Size
+            <div class="submenu">
+                <div class="menu-item" data-size="12">Small (12px)</div>
+                <div class="menu-item" data-size="16">Medium (16px)</div>
+                <div class="menu-item" data-size="20">Large (20px)</div>
+                <div class="menu-item" data-size="24">Extra Large (24px)</div>
+            </div>
+        </div>
+        <div class="menu-item" data-action="text-color">
+            <i class="menu-icon">🎨</i>Text Color
+            <div class="submenu color-submenu">
+                <div class="menu-item color-item" data-color="#333333">
+                    <span class="color-dot" style="background: #333333"></span>Black
+                </div>
+                <div class="menu-item color-item" data-color="#1890ff">
+                    <span class="color-dot" style="background: #1890ff"></span>Blue
+                </div>
+                <div class="menu-item color-item" data-color="#52c41a">
+                    <span class="color-dot" style="background: #52c41a"></span>Green
+                </div>
+                <div class="menu-item color-item" data-color="#f5222d">
+                    <span class="color-dot" style="background: #f5222d"></span>Red
+                </div>
+                <div class="menu-item color-item" data-color="#722ed1">
+                    <span class="color-dot" style="background: #722ed1"></span>Purple
+                </div>
+                <div class="menu-item color-item" data-color="#faad14">
+                    <span class="color-dot" style="background: #faad14"></span>Orange
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            padding: 4px 0;
+            min-width: 160px;
+            z-index: 1000;
+        }
+        .menu-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            position: relative;
+            color: #333;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .menu-item:hover {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+        .menu-icon {
+            margin-right: 8px;
+            font-style: normal;
+        }
+        .menu-item[data-action="font-size"]:hover .submenu,
+        .menu-item[data-action="text-color"]:hover .submenu {
+            display: block;
+        }
+        .submenu {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            min-width: 140px;
+            margin-left: 2px; /* Add a small gap between menu and submenu */
+        }
+        /* Ensure submenus stay visible while hovering */
+        .submenu:hover {
+            display: block;
+        }
+        .submenu .menu-item {
+            padding-left: 12px;
+        }
+        .color-dot {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: 1px solid rgba(0,0,0,0.1);
+            vertical-align: middle;
+        }
+        .color-item {
+            display: flex;
+            align-items: center;
+        }
+        .color-item.active {
+            font-weight: bold;
+            color: #1890ff;
+        }
+        .color-item.active .color-dot {
+            border: 2px solid #1890ff;
+        }
+    </style>
     <style>
         #navigation-bar {
             position: fixed;

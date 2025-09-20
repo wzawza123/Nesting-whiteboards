@@ -377,28 +377,37 @@ graph.on('edge:click', (ev) => {
     updateSelection(ev.item);
 });
 
-// Handle node label editing through right-click
-graph.on('node:contextmenu', (ev) => {
-    ev.preventDefault(); // Prevent default context menu
-    const { item, canvasX, canvasY } = ev;
+// Function to start editing node label
+const startEditingLabel = (item) => {
     const model = item.getModel();
     const currentLabel = model.label || '';
-
+    
+    // Get node position and size
+    const nodeBox = item.getBBox();
+    const { x, y, width, height } = nodeBox;
+    const point = graph.getCanvasByPoint(x, y);
+    
     // Create input element
     const input = document.createElement('input');
     input.value = currentLabel;
     input.className = 'node-editor';
     input.style.position = 'absolute';
-    input.style.left = `${canvasX}px`;
-    input.style.top = `${canvasY}px`;
-    input.style.width = '120px';
-    input.style.padding = '4px';
-    input.style.border = '1px solid #1890ff';
+    input.style.width = `${Math.max(120, width)}px`;
+    input.style.padding = '4px 8px';
+    input.style.border = '2px solid #1890ff';
     input.style.borderRadius = '4px';
     input.style.zIndex = '1000';
+    input.style.fontSize = '16px';
+    input.style.backgroundColor = 'white';
+    input.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+    
+    // Position the input at the center of the node
+    input.style.left = `${point.x - width/2}px`;
+    input.style.top = `${point.y - height/2}px`;
     
     document.body.appendChild(input);
     input.focus();
+    input.select(); // Select all text for easy editing
 
     // Handle input submission
     const handleSubmit = () => {
@@ -418,6 +427,120 @@ graph.on('node:contextmenu', (ev) => {
             document.body.removeChild(input);
         }
     });
+};
+
+// Function to show context menu
+const showContextMenu = (x, y, node) => {
+    const menu = document.getElementById('context-menu');
+    menu.style.display = 'block';
+    menu.style.left = `${x}px`;
+    menu.style.top = `${y}px`;
+    
+    // Store current node reference
+    menu.dataset.nodeId = node.get('id');
+    
+    // Get the current styles from the node's model
+    const model = node.getModel();
+    const currentFontSize = model.labelCfg?.style?.fontSize || 16;
+    const currentColor = model.labelCfg?.style?.fill || '#333333';
+    
+    // Update font size items to show current size
+    menu.querySelectorAll('.submenu .menu-item[data-size]').forEach(item => {
+        const size = parseInt(item.dataset.size);
+        if (size === currentFontSize) {
+            item.style.fontWeight = 'bold';
+            item.style.color = '#1890ff';
+        } else {
+            item.style.fontWeight = 'normal';
+            item.style.color = '#333';
+        }
+    });
+
+    // Update color items to show current color
+    menu.querySelectorAll('.color-item').forEach(item => {
+        const color = item.dataset.color;
+        if (color === currentColor) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+};
+
+// Function to hide context menu
+const hideContextMenu = () => {
+    const menu = document.getElementById('context-menu');
+    menu.style.display = 'none';
+};
+
+// Handle node right-click
+graph.on('node:contextmenu', (ev) => {
+    ev.preventDefault();
+    const { item, clientX, clientY } = ev;
+    
+    // Only show context menu for rectangle nodes
+    if (item.getModel().type !== 'text-only') {
+        showContextMenu(clientX, clientY, item);
+    }
+});
+
+// Handle context menu item clicks
+document.getElementById('context-menu').addEventListener('click', (ev) => {
+    const target = ev.target.closest('.menu-item');
+    if (!target) return;
+    
+    const menu = document.getElementById('context-menu');
+    const nodeId = menu.dataset.nodeId;
+    const node = graph.findById(nodeId);
+    
+    if (!node) return;
+    
+    if (target.dataset.action === 'edit') {
+        startEditingLabel(node);
+    } else if (target.dataset.size) {
+        // Update font size
+        const fontSize = parseInt(target.dataset.size);
+        graph.updateItem(node, {
+            labelCfg: {
+                style: {
+                    ...node.get('labelCfg')?.style,
+                    fontSize
+                }
+            }
+        });
+    } else if (target.dataset.color) {
+        // Update text color
+        const color = target.dataset.color;
+        graph.updateItem(node, {
+            labelCfg: {
+                style: {
+                    ...node.get('labelCfg')?.style,
+                    fill: color
+                }
+            }
+        });
+    }
+    
+    hideContextMenu();
+});
+
+// Hide context menu when clicking outside
+document.addEventListener('click', (ev) => {
+    if (!ev.target.closest('.context-menu')) {
+        hideContextMenu();
+    }
+});
+
+// Hide context menu when scrolling or dragging
+graph.on('viewportchange', hideContextMenu);
+graph.on('dragstart', hideContextMenu);
+
+// Add keyboard shortcut for editing
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && selectedItem && selectedItem.getModel().type !== 'text-only') {
+        e.preventDefault(); // Prevent default enter behavior
+        startEditingLabel(selectedItem);
+    }
 });
 
 // Function to update back button text
