@@ -75,6 +75,136 @@ let currentGraphData = {
     label: 'Root'
 };
 
+// Track mouse position and resize state
+let mousePosition = { x: 0, y: 0 };
+let isResizing = false;
+let resizeNode = null;
+let resizeStartSize = null;
+let resizeStartPoint = null;
+let resizeHandle = null;
+
+document.getElementById('container').addEventListener('mousemove', (ev) => {
+    const containerRect = graph.get('container').getBoundingClientRect();
+    const point = {
+        x: ev.clientX - containerRect.left,
+        y: ev.clientY - containerRect.top
+    };
+    mousePosition = graph.getPointByClient(point.x, point.y);
+
+    // Handle resizing
+    if (isResizing && resizeNode) {
+        const dx = mousePosition.x - resizeStartPoint.x;
+        const dy = mousePosition.y - resizeStartPoint.y;
+        let newWidth = resizeStartSize[0];
+        let newHeight = resizeStartSize[1];
+
+        // Calculate new size based on resize handle
+        switch (resizeHandle) {
+            case 'nw':
+                newWidth = resizeStartSize[0] - dx * 2;
+                newHeight = resizeStartSize[1] - dy * 2;
+                break;
+            case 'ne':
+                newWidth = resizeStartSize[0] + dx * 2;
+                newHeight = resizeStartSize[1] - dy * 2;
+                break;
+            case 'se':
+                newWidth = resizeStartSize[0] + dx * 2;
+                newHeight = resizeStartSize[1] + dy * 2;
+                break;
+            case 'sw':
+                newWidth = resizeStartSize[0] - dx * 2;
+                newHeight = resizeStartSize[1] + dy * 2;
+                break;
+        }
+
+        // Ensure minimum size
+        newWidth = Math.max(30, newWidth);
+        newHeight = Math.max(30, newHeight);
+
+        // Update node size
+        graph.updateItem(resizeNode, {
+            size: [newWidth, newHeight]
+        });
+    }
+});
+
+// Add mouse down handler for resize controls
+graph.on('node:mousedown', (ev) => {
+    const { item, target } = ev;
+    const name = target.get('name');
+    
+    if (name && name.startsWith('control-point-')) {
+        isResizing = true;
+        resizeNode = item;
+        resizeStartSize = item.getModel().size || [100, 100];
+        resizeStartPoint = { ...mousePosition };
+        resizeHandle = name.split('-')[2]; // Get handle position (nw, ne, se, sw)
+        ev.preventDefault();
+    }
+});
+
+// Add mouse up handler
+document.addEventListener('mouseup', () => {
+    isResizing = false;
+    resizeNode = null;
+    resizeStartSize = null;
+    resizeStartPoint = null;
+    resizeHandle = null;
+});
+
+// Handle image paste
+document.addEventListener('paste', (ev) => {
+    const items = ev.clipboardData.items;
+    
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+            const file = items[i].getAsFile();
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                // Create a temporary image to get dimensions
+                const img = new Image();
+                img.onload = () => {
+                    // Calculate size maintaining aspect ratio
+                    let width = img.width;
+                    let height = img.height;
+                    const maxSize = 200;
+                    
+                    if (width > height) {
+                        if (width > maxSize) {
+                            height *= maxSize / width;
+                            width = maxSize;
+                        }
+                    } else {
+                        if (height > maxSize) {
+                            width *= maxSize / height;
+                            height = maxSize;
+                        }
+                    }
+                    
+                    // Use current mouse position for placement
+                    const point = mousePosition;
+                    
+                    // Add image node
+                    const id = `image-${Date.now()}`;
+                    graph.addItem('node', {
+                        id,
+                        x: point.x,
+                        y: point.y,
+                        type: 'image-node',
+                        img: e.target.result,
+                        size: [width, height],
+                    });
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            break;
+        }
+    }
+});
+
 // Function to navigate to specific level
 const navigateToLevel = (level) => {
     if (level < 0 || level > graphStack.length) return;
@@ -198,6 +328,130 @@ backButton.addEventListener('mouseout', () => {
 // Handle window resize
 window.addEventListener('resize', () => {
     graph.changeSize(window.innerWidth, window.innerHeight);
+});
+
+// Register image node
+G6.registerNode('image-node', {
+    draw(cfg, group) {
+        const size = cfg.size || [100, 100];
+        const width = size[0];
+        const height = size[1];
+        
+        // Add image shape
+        const imageShape = group.addShape('image', {
+            attrs: {
+                x: -width/2,
+                y: -height/2,
+                width: width,
+                height: height,
+                img: cfg.img,
+                cursor: 'move',
+            },
+            name: 'image-shape',
+        });
+
+        // Add selection border (initially invisible)
+        const borderShape = group.addShape('rect', {
+            attrs: {
+                x: -width/2,
+                y: -height/2,
+                width: width,
+                height: height,
+                stroke: 'transparent',
+                lineWidth: 2,
+                cursor: 'move',
+            },
+            name: 'image-border',
+        });
+
+        // Add resize controls (initially invisible)
+        const controlSize = 8;
+        const controlPoints = [
+            { x: -width/2, y: -height/2, cursor: 'nw-resize', name: 'nw' },
+            { x: width/2, y: -height/2, cursor: 'ne-resize', name: 'ne' },
+            { x: width/2, y: height/2, cursor: 'se-resize', name: 'se' },
+            { x: -width/2, y: height/2, cursor: 'sw-resize', name: 'sw' }
+        ];
+
+        controlPoints.forEach(point => {
+            group.addShape('rect', {
+                attrs: {
+                    x: point.x - controlSize/2,
+                    y: point.y - controlSize/2,
+                    width: controlSize,
+                    height: controlSize,
+                    fill: '#fff',
+                    stroke: '#1890ff',
+                    cursor: point.cursor,
+                    opacity: 0,
+                },
+                name: `control-point-${point.name}`,
+            });
+        });
+
+        return imageShape;
+    },
+    update(cfg, node) {
+        const group = node.getContainer();
+        const imageShape = group.find(e => e.get('name') === 'image-shape');
+        const borderShape = group.find(e => e.get('name') === 'image-border');
+        
+        if (imageShape) {
+            const size = cfg.size || [100, 100];
+            const width = size[0];
+            const height = size[1];
+            const controlSize = 8;
+            
+            imageShape.attr({
+                x: -width/2,
+                y: -height/2,
+                width: width,
+                height: height,
+                img: cfg.img,
+            });
+            
+            borderShape.attr({
+                x: -width/2,
+                y: -height/2,
+                width: width,
+                height: height,
+            });
+
+            // Update control points positions
+            const controlPoints = [
+                { x: -width/2, y: -height/2, name: 'nw' },
+                { x: width/2, y: -height/2, name: 'ne' },
+                { x: width/2, y: height/2, name: 'se' },
+                { x: -width/2, y: height/2, name: 'sw' }
+            ];
+
+            controlPoints.forEach(point => {
+                const control = group.find(e => e.get('name') === `control-point-${point.name}`);
+                if (control) {
+                    control.attr({
+                        x: point.x - controlSize/2,
+                        y: point.y - controlSize/2,
+                    });
+                }
+            });
+        }
+    },
+    setState(name, value, node) {
+        const group = node.getContainer();
+        const borderShape = group.find(e => e.get('name') === 'image-border');
+        
+        if (name === 'selected') {
+            borderShape.attr('stroke', value ? '#1890ff' : 'transparent');
+            
+            // Show/hide control points
+            ['nw', 'ne', 'se', 'sw'].forEach(pos => {
+                const control = group.find(e => e.get('name') === `control-point-${pos}`);
+                if (control) {
+                    control.attr('opacity', value ? 1 : 0);
+                }
+            });
+        }
+    },
 });
 
 // Register custom text node
