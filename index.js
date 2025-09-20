@@ -62,15 +62,59 @@ let currentMode = 'default';
 let selectedItem = null;
 let edgeStartNode = null;
 
-// Initialize graph data
-const data = {
+// Graph state management
+let graphStack = [];
+let currentGraphData = {
+    id: 'root',
     nodes: [],
     edges: [],
+    parentNode: null
+};
+
+// Function to save current graph state
+const saveGraphState = () => {
+    return {
+        nodes: graph.save().nodes.map(node => ({...node})),
+        edges: graph.save().edges.map(edge => ({...edge}))
+    };
+};
+
+// Function to update current graph data
+const updateCurrentGraphData = () => {
+    const savedState = saveGraphState();
+    currentGraphData.nodes = savedState.nodes;
+    currentGraphData.edges = savedState.edges;
 };
 
 // Load initial data
-graph.data(data);
+graph.data(currentGraphData);
 graph.render();
+
+// Add back button container
+const backButton = document.createElement('button');
+backButton.id = 'backButton';
+backButton.innerText = '← Back to Parent';
+backButton.style.position = 'fixed';
+backButton.style.top = '10px';
+backButton.style.right = '10px';
+backButton.style.display = 'none';
+backButton.style.padding = '8px 16px';
+backButton.style.backgroundColor = '#1890ff';
+backButton.style.color = 'white';
+backButton.style.border = 'none';
+backButton.style.borderRadius = '4px';
+backButton.style.cursor = 'pointer';
+backButton.style.zIndex = '1000';
+backButton.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+document.body.appendChild(backButton);
+
+// Back button hover effect
+backButton.addEventListener('mouseover', () => {
+    backButton.style.backgroundColor = '#40a9ff';
+});
+backButton.addEventListener('mouseout', () => {
+    backButton.style.backgroundColor = '#1890ff';
+});
 
 // Handle window resize
 window.addEventListener('resize', () => {
@@ -261,6 +305,66 @@ graph.on('node:contextmenu', (ev) => {
             document.body.removeChild(input);
         }
     });
+});
+
+// Handle double click to enter subgraph
+graph.on('node:dblclick', (ev) => {
+    const node = ev.item;
+    const model = node.getModel();
+    
+    // Only handle rectangle nodes
+    if (model.type === 'text-only') return;
+    
+    // Save current graph state
+    updateCurrentGraphData();
+    
+    // Push current state to stack
+    graphStack.push({...currentGraphData});
+    
+    // Initialize subgraph if it doesn't exist
+    if (!model.subGraph) {
+        model.subGraph = {
+            id: `subgraph-${model.id}`,
+            nodes: [],
+            edges: [],
+            parentNode: model.id
+        };
+    }
+    
+    // Switch to subgraph
+    currentGraphData = model.subGraph;
+    graph.data(currentGraphData);
+    graph.render();
+    
+    // Show back button
+    backButton.style.display = 'block';
+});
+
+// Handle back button click
+backButton.addEventListener('click', () => {
+    if (graphStack.length > 0) {
+        // Save current subgraph state
+        updateCurrentGraphData();
+        
+        // Update parent node's subgraph data
+        const parentGraph = graphStack[graphStack.length - 1];
+        const parentNode = parentGraph.nodes.find(
+            node => node.id === currentGraphData.parentNode
+        );
+        if (parentNode) {
+            parentNode.subGraph = {...currentGraphData};
+        }
+        
+        // Restore parent graph
+        currentGraphData = graphStack.pop();
+        graph.data(currentGraphData);
+        graph.render();
+        
+        // Hide back button if we're at root level
+        if (graphStack.length === 0) {
+            backButton.style.display = 'none';
+        }
+    }
 });
 
 // Clear selection when clicking on blank canvas
