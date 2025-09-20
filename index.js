@@ -203,6 +203,9 @@ window.addEventListener('resize', () => {
 // Register custom text node
 G6.registerNode('text-only', {
     draw(cfg, group) {
+        // Get style configurations
+        const style = cfg.labelCfg?.style || {};
+        
         // Add background rect for selection highlight and better interaction
         const textShape = group.addShape('text', {
             attrs: {
@@ -211,8 +214,8 @@ G6.registerNode('text-only', {
                 y: 0,
                 textAlign: 'center',
                 textBaseline: 'middle',
-                fill: '#333',
-                fontSize: 16,
+                fill: style.fill || '#333',
+                fontSize: style.fontSize || 16,
                 fontFamily: 'Arial',
                 cursor: 'move', // Change cursor to indicate draggable
             },
@@ -249,7 +252,12 @@ G6.registerNode('text-only', {
         const backgroundRect = group.find(e => e.get('name') === 'text-bg');
         
         if (textShape) {
-            textShape.attr('text', cfg.label);
+            const style = cfg.labelCfg?.style || {};
+            textShape.attr({
+                text: cfg.label,
+                fill: style.fill || '#333',
+                fontSize: style.fontSize || 16
+            });
         }
         
         if (backgroundRect) {
@@ -477,11 +485,7 @@ const hideContextMenu = () => {
 graph.on('node:contextmenu', (ev) => {
     ev.preventDefault();
     const { item, clientX, clientY } = ev;
-    
-    // Only show context menu for rectangle nodes
-    if (item.getModel().type !== 'text-only') {
-        showContextMenu(clientX, clientY, item);
-    }
+    showContextMenu(clientX, clientY, item);
 });
 
 // Handle context menu item clicks
