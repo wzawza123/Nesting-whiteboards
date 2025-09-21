@@ -137,9 +137,9 @@
 /* 节点编辑器样式 */
 .node-editor {
   font-family: Arial, sans-serif;
-  font-size: 20px;
+  font-size: 16px;
   background: white;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   outline: none;
   padding: 8px 12px;
   border: 2px solid #1890ff;
@@ -149,6 +149,44 @@
 .node-editor:focus {
   border-color: #40a9ff;
   box-shadow: 0 0 0 2px rgba(24,144,255,0.2);
+}
+
+/* 多行文本编辑器样式 */
+.multiline-editor {
+  font-family: Arial, sans-serif !important;
+  line-height: 1.2 !important;
+  resize: both;
+  min-width: 120px;
+  min-height: 40px;
+  word-wrap: break-word;
+  white-space: pre-wrap; /* 保留换行和空格 */
+  overflow-wrap: break-word;
+}
+
+.multiline-editor::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.multiline-editor::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.multiline-editor::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.multiline-editor::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 确保多行编辑器在焦点时有正确的样式 */
+.multiline-editor:focus {
+  border-color: #40a9ff;
+  box-shadow: 0 0 0 2px rgba(24,144,255,0.2);
+  outline: none;
 }
 
 /* 上下文菜单样式 */
