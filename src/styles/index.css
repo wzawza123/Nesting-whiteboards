@@ -20,34 +20,58 @@
   margin: 0 8px;
   padding: 8px 16px;
   cursor: pointer;
-  font-size: 18px; /* 增大工具栏按钮字体 */
+  font-size: 18px;
+  background-color: white;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.toolbar button:hover {
+  color: #1890ff;
+  border-color: #1890ff;
+  background-color: #e6f7ff;
+}
+
+/* 工具按钮激活状态 */
+.toolbar button.active {
+  color: #fff;
+  background-color: #1890ff;
+  border-color: #1890ff;
+  box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+}
+
+.toolbar button.active:hover {
+  color: #fff;
+  background-color: #40a9ff;
+  border-color: #40a9ff;
 }
 
 .toolbar .separator {
   display: inline-block;
   width: 1px;
-  height: 24px; /* 增大分隔符高度 */
+  height: 24px;
   background: #ccc;
   margin: 0 12px;
   vertical-align: middle;
 }
 
 #saveGraph, #loadGraph {
-  background-color: #1890ff;
-  color: white;
-  border: none;
+  background-color: #1890ff !important;
+  color: white !important;
+  border: none !important;
   padding: 8px 20px;
-  font-size: 18px; /* 增大保存/加载按钮字体 */
+  font-size: 18px;
 }
 
 #saveGraph:hover, #loadGraph:hover {
-  background-color: #40a9ff;
+  background-color: #40a9ff !important;
 }
 
 /* 节点编辑器样式 */
 .node-editor {
   font-family: Arial, sans-serif;
-  font-size: 20px; /* 增大编辑器字体 */
+  font-size: 20px;
   background: white;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   outline: none;
@@ -66,18 +90,18 @@
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   padding: 6px 0;
-  min-width: 200px; /* 增大菜单宽度 */
+  min-width: 200px;
   z-index: 1000;
 }
 
 .menu-item {
-  padding: 10px 20px; /* 增大菜单项内边距 */
+  padding: 10px 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
   position: relative;
   color: #333;
-  font-size: 18px; /* 增大菜单项字体 */
+  font-size: 18px;
   transition: all 0.3s;
 }
 
@@ -89,7 +113,7 @@
 .menu-icon {
   margin-right: 12px;
   font-style: normal;
-  font-size: 20px; /* 增大图标字体 */
+  font-size: 20px;
 }
 
 .menu-item[data-action="font-size"]:hover .submenu,
@@ -106,7 +130,7 @@
   border: 1px solid #e8e8e8;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  min-width: 180px; /* 增大子菜单宽度 */
+  min-width: 180px;
   margin-left: 2px;
 }
 
@@ -120,8 +144,8 @@
 
 .color-dot {
   display: inline-block;
-  width: 18px; /* 增大颜色点大小 */
-  height: 18px; /* 增大颜色点大小 */
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   margin-right: 12px;
   border: 1px solid rgba(0,0,0,0.1);
@@ -156,25 +180,25 @@
   font-family: Arial, sans-serif;
   z-index: 1000;
   text-align: center;
-  min-width: 400px; /* 增大导航栏宽度 */
+  min-width: 400px;
 }
 
 .nav-path {
   color: #666;
-  font-size: 20px; /* 增大导航路径字体 */
+  font-size: 20px;
   line-height: 1.5;
 }
 
 .nav-separator {
   color: #999;
   margin: 0 16px;
-  font-size: 22px; /* 增大分隔符字体 */
+  font-size: 22px;
 }
 
 .nav-node {
   color: #1890ff;
   font-weight: 500;
-  font-size: 20px; /* 增大导航节点字体 */
+  font-size: 20px;
   cursor: pointer;
   padding: 4px 10px;
   border-radius: 4px;
@@ -189,7 +213,7 @@
 .nav-current {
   color: #333;
   font-weight: 600;
-  font-size: 20px; /* 增大当前节点字体 */
+  font-size: 20px;
   cursor: default;
   padding: 4px 10px;
 }
@@ -205,7 +229,7 @@
   top: 10px;
   right: 10px;
   display: none;
-  padding: 10px 20px; /* 增大按钮内边距 */
+  padding: 10px 20px;
   background-color: #1890ff;
   color: white;
   border: none;
@@ -213,6 +237,6 @@
   cursor: pointer;
   z-index: 1000;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  font-size: 18px; /* 增大返回按钮字体 */
+  font-size: 18px;
   font-weight: 500;
 }

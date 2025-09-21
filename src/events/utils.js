@@ -14,3 +14,5 @@ export const updateSelection = (graph, item) => {
   // 更新图的选中项状态
   graph.set('selectedItem', item);
 };
+
+

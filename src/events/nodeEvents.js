@@ -14,29 +14,30 @@ export const bindNodeEvents = (graph) => {
   graph.on('node:click', (ev) => {
     const node = ev.item;
     const currentMode = graph.get('currentMode');
-    const edgeStartNode = graph.get('edgeStartNode');
     
     if (currentMode === 'addEdge') {
+      const edgeStartNode = graph.get('edgeStartNode');
       if (!edgeStartNode) {
+        // 设置起始节点
         graph.set('edgeStartNode', node);
         graph.setItemState(node, 'selected', true);
-      } else {
-        // 检查是否点击了同一个节点
-        if (edgeStartNode.get('id') !== node.get('id')) {
-          const id = `edge-${Date.now()}`;
-          graph.addItem('edge', {
-            id,
-            source: edgeStartNode.get('id'),
-            target: node.get('id'),
-          });
-        }
-        // 清除起始节点的选择状态
+      } else if (edgeStartNode !== node) {
+        // 创建边（如果不是同一个节点）
+        const id = `edge-${Date.now()}`;
+        graph.addItem('edge', {
+          id,
+          source: edgeStartNode.get('id'),
+          target: node.get('id'),
+        });
+        // 清除起始节点状态
         graph.setItemState(edgeStartNode, 'selected', false);
         graph.set('edgeStartNode', null);
-        graph.set('currentMode', 'default');
+        // 不要自动重置模式，让用户可以继续添加边
       }
+    } else {
+      // 在非添加边模式下，正常处理节点选择
+      updateSelection(graph, node);
     }
-    updateSelection(graph, node);
   });
 
   // 节点双击事件
