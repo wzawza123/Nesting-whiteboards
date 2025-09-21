@@ -55,6 +55,7 @@ export const graphConfig = {
       'drag-canvas',  // 启用画布拖拽
       'zoom-canvas',  // 启用缩放
       'drag-node',    // 启用节点拖拽
+      'image-preview', // 启用图片预览
     ],
   },
   nodeStateStyles,

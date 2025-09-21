@@ -30,8 +30,11 @@ export const bindPasteEvents = (graph) => {
               }
             }
             
-            // 使用当前鼠标位置进行放置
-            const point = graph.get('mousePosition');
+            // 使用当前鼠标位置进行放置，如果没有则使用画布中心
+            const point = graph.get('mousePosition') || {
+              x: graph.get('width') / 2,
+              y: graph.get('height') / 2
+            };
             
             // 添加图片节点
             const id = `image-${Date.now()}`;

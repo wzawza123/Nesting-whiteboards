@@ -1,5 +1,7 @@
 import { sizes } from '../config';
 import { updateSelection } from './utils';
+import { Image } from 'antd';
+import 'antd/dist/reset.css';
 
 // 跟踪鼠标位置和调整大小状态
 let mousePosition = { x: 0, y: 0 };
@@ -45,9 +47,44 @@ export const bindNodeEvents = (graph) => {
     const node = ev.item;
     const model = node.getModel();
     
-    // 只处理矩形节点
-    if (model.type === 'text-only') return;
+    console.log('双击节点事件触发:', {
+      nodeType: model.type,
+      nodeId: model.id,
+      nodeModel: model
+    });
     
+    // 处理图片节点的预览
+    if (model.type === 'image-node' && model.img) {
+      console.log('打开图片预览');
+      // 创建一个临时的预览 div
+      const previewDiv = document.createElement('div');
+      document.body.appendChild(previewDiv);
+      
+      // 使用 Ant Design 的 Image 预览功能
+      const imgSrc = model.img;
+      const previewInstance = Image.preview({
+        src: imgSrc,
+        visible: true,
+        onVisibleChange: (visible) => {
+          if (!visible) {
+            // 当预览关闭时，移除临时 div
+            document.body.removeChild(previewDiv);
+          }
+        }
+      });
+      // 阻止事件继续传播
+      ev.preventDefault();
+      ev.stopPropagation();
+      return;
+    }
+    
+    // 跳过文本节点
+    if (model.type === 'text-only') {
+      console.log('跳过进入子图 - 节点类型:', model.type);
+      return;
+    }
+    
+    console.log('准备进入子图 - 节点类型:', model.type);
     // 触发进入子图事件
     graph.emit('enterSubgraph', node);
   });

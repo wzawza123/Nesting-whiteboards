@@ -102,8 +102,8 @@ export class Navigation {
   enterSubgraph(node) {
     const model = node.getModel();
     
-    // 只处理矩形节点
-    if (model.type === 'text-only') return;
+    // 只处理普通矩形节点
+    if (model.type === 'text-only' || model.type === 'image-node') return;
     
     // 保存当前图形状态
     this.updateCurrentGraphData();
@@ -165,7 +165,17 @@ export class Navigation {
   bindEvents() {
     // 双击进入子图
     this.graph.on('node:dblclick', (ev) => {
-      this.enterSubgraph(ev.item);
+      const node = ev.item;
+      const model = node.getModel();
+      
+      // 跳过图片节点和文本节点
+      if (model.type === 'image-node' || model.type === 'text-only') {
+        console.log('Navigation: 跳过子图 - 节点类型:', model.type);
+        return;
+      }
+      
+      console.log('Navigation: 进入子图 - 节点类型:', model.type);
+      this.enterSubgraph(node);
     });
 
     // 暴露导航函数到全局作用域（用于导航路径点击）

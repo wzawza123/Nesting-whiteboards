@@ -1,6 +1,10 @@
 import { sizes, colors } from '../config';
 
+import { Image } from 'antd';
+import 'antd/dist/reset.css';
+
 export const registerImageNode = (G6) => {
+
   G6.registerNode('image-node', {
     draw(cfg, group) {
       const size = cfg.size || [100, 100];
