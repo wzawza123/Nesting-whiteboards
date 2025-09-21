@@ -14,6 +14,8 @@
   padding: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 100;
 }
 
 .toolbar button {
@@ -25,6 +27,22 @@
   border: 1px solid #d9d9d9;
   border-radius: 4px;
   transition: all 0.3s;
+  position: relative;
+  min-width: 160px;
+  text-align: left;
+}
+
+.toolbar button .shortcut {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #999;
+  background: #f5f5f5;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: monospace;
 }
 
 .toolbar button:hover {
@@ -33,12 +51,22 @@
   background-color: #e6f7ff;
 }
 
+.toolbar button:hover .shortcut {
+  color: #1890ff;
+  background: #e6f7ff;
+}
+
 /* 工具按钮激活状态 */
 .toolbar button.active {
   color: #fff;
   background-color: #1890ff;
   border-color: #1890ff;
   box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+}
+
+.toolbar button.active .shortcut {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .toolbar button.active:hover {
@@ -68,6 +96,11 @@
   background-color: #40a9ff !important;
 }
 
+#saveGraph .shortcut, #loadGraph .shortcut {
+  color: rgba(255, 255, 255, 0.8) !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
 /* 节点编辑器样式 */
 .node-editor {
   font-family: Arial, sans-serif;
@@ -75,6 +108,9 @@
   background: white;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   outline: none;
+  padding: 8px 12px;
+  border: 2px solid #1890ff;
+  border-radius: 4px;
 }
 
 .node-editor:focus {
@@ -181,18 +217,29 @@
   z-index: 1000;
   text-align: center;
   min-width: 400px;
+  transition: all 0.3s ease;
+}
+
+#navigation-bar:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
 
 .nav-path {
   color: #666;
   font-size: 20px;
   line-height: 1.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .nav-separator {
   color: #999;
   margin: 0 16px;
   font-size: 22px;
+  user-select: none;
 }
 
 .nav-node {
@@ -203,6 +250,8 @@
   padding: 4px 10px;
   border-radius: 4px;
   transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .nav-node:hover {
@@ -216,11 +265,6 @@
   font-size: 20px;
   cursor: default;
   padding: 4px 10px;
-}
-
-#navigation-bar:hover {
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-  transition: box-shadow 0.3s ease;
 }
 
 /* 返回按钮样式 */
@@ -239,4 +283,41 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   font-size: 18px;
   font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+#backButton:hover {
+  background-color: #40a9ff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* 修复导航路径布局 */
+.nav-path {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.nav-path > * {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* 确保导航栏在滚动时保持可见 */
+#navigation-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background: white;
+  padding: 16px 32px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  min-width: 400px;
+  max-width: 80%;
+  margin: 0 auto;
 }
