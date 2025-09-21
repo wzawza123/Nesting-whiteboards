@@ -1,4 +1,5 @@
 import { updateSelection } from './utils';
+import { startEditingLabel } from '../contextMenu/labelEditor';
 
 // 自动适配视图函数
 const fitView = (graph) => {
@@ -38,24 +39,42 @@ export const bindCanvasEvents = (graph) => {
     if (currentMode === 'addNode') {
       const point = graph.getPointByClient(ev.clientX, ev.clientY);
       const id = `node-${Date.now()}`;
-      graph.addItem('node', {
+      const newNode = graph.addItem('node', {
         id,
         x: point.x,
         y: point.y,
         label: 'Right click to edit',
       });
-      // 不要自动重置模式，让用户可以继续添加节点
+      
+      // 自动取消工具选择并切换到默认模式
+      graph.set('currentMode', 'default');
+      graph.emit('modeChange', 'default');
+      
+      // 自动进入编辑模式
+      setTimeout(() => {
+        startEditingLabel(newNode, graph);
+      }, 100);
+      
     } else if (currentMode === 'addText') {
       const point = graph.getPointByClient(ev.clientX, ev.clientY);
       const id = `text-${Date.now()}`;
-      graph.addItem('node', {
+      const newTextNode = graph.addItem('node', {
         id,
         x: point.x,
         y: point.y,
         label: 'Right click to edit',
         type: 'text-only',
       });
-      // 不要自动重置模式，让用户可以继续添加文本
+      
+      // 自动取消工具选择并切换到默认模式
+      graph.set('currentMode', 'default');
+      graph.emit('modeChange', 'default');
+      
+      // 自动进入编辑模式
+      setTimeout(() => {
+        startEditingLabel(newTextNode, graph);
+      }, 100);
+      
     } else if (currentMode === 'default') {
       // 清除选择
       updateSelection(graph, null);

@@ -1,6 +1,7 @@
 import { sizes } from '../config';
 import { updateSelection } from './utils';
 import { showImagePreview } from '../components/ImagePreview';
+import { startEditingLabel } from '../contextMenu/labelEditor';
 
 // 跟踪鼠标位置和调整大小状态
 let mousePosition = { x: 0, y: 0 };
@@ -64,9 +65,10 @@ export const bindNodeEvents = (graph) => {
       return;
     }
     
-    // 跳过文本节点
+    // 处理文本节点的编辑
     if (model.type === 'text-only') {
-      console.log('跳过进入子图 - 节点类型:', model.type);
+      console.log('开始编辑文本节点:', model.type);
+      startEditingLabel(node, graph);
       return;
     }
     
