@@ -36,7 +36,7 @@ export const registerRectangleNode = (G6) => {
             width: width - 6,
             height: height - 6,
             fill: 'transparent',
-            stroke: colors.primary,
+            stroke: '#333',
             lineWidth: 1,
             radius: Math.max(0, (cfg.style?.radius || 8) - 3),
             cursor: 'move',
@@ -52,7 +52,7 @@ export const registerRectangleNode = (G6) => {
             width: width + 4,
             height: height + 4,
             fill: 'transparent',
-            stroke: colors.primary,
+            stroke: '#333',
             lineWidth: 2,
             radius: (cfg.style?.radius || 8) + 2,
             cursor: 'move',
@@ -121,7 +121,7 @@ export const registerRectangleNode = (G6) => {
               y: -height/2 + 3,
               width: width - 6,
               height: height - 6,
-              stroke: colors.primary,
+              stroke: '#333',
               lineWidth: 1,
               radius: Math.max(0, (cfg.style?.radius || 8) - 3),
             });
@@ -133,7 +133,7 @@ export const registerRectangleNode = (G6) => {
                 width: width - 6,
                 height: height - 6,
                 fill: 'transparent',
-                stroke: colors.primary,
+                stroke: '#333',
                 lineWidth: 1,
                 radius: Math.max(0, (cfg.style?.radius || 8) - 3),
                 cursor: 'move',
@@ -149,7 +149,7 @@ export const registerRectangleNode = (G6) => {
               y: -height/2 - 2,
               width: width + 4,
               height: height + 4,
-              stroke: colors.primary,
+              stroke: '#333',
               lineWidth: 2,
               radius: (cfg.style?.radius || 8) + 2,
             });
@@ -161,7 +161,7 @@ export const registerRectangleNode = (G6) => {
                 width: width + 4,
                 height: height + 4,
                 fill: 'transparent',
-                stroke: colors.primary,
+                stroke: '#333',
                 lineWidth: 2,
                 radius: (cfg.style?.radius || 8) + 2,
                 cursor: 'move',
@@ -201,22 +201,22 @@ export const registerRectangleNode = (G6) => {
           // 选中状态
           if (mainRect) {
             mainRect.attr({
-              stroke: colors.primary,
-              shadowColor: colors.primary,
+              stroke: '#333',
+              shadowColor: '#333',
               shadowBlur: styleConfig.shadowBlur,
             });
           }
           if (innerBorder) {
             innerBorder.attr({
-              stroke: colors.primary,
-              shadowColor: colors.primary,
+              stroke: '#333',
+              shadowColor: '#333',
               shadowBlur: styleConfig.shadowBlur,
             });
           }
           if (outerBorder) {
             outerBorder.attr({
-              stroke: colors.primary,
-              shadowColor: colors.primary,
+              stroke: '#333',
+              shadowColor: '#333',
               shadowBlur: styleConfig.shadowBlur,
             });
           }
@@ -231,14 +231,14 @@ export const registerRectangleNode = (G6) => {
           }
           if (innerBorder) {
             innerBorder.attr({
-              stroke: colors.primary,
+              stroke: '#333',
               shadowColor: null,
               shadowBlur: 0,
             });
           }
           if (outerBorder) {
             outerBorder.attr({
-              stroke: colors.primary,
+              stroke: '#333',
               shadowColor: null,
               shadowBlur: 0,
             });
