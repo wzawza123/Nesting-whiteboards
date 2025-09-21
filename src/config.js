@@ -10,7 +10,7 @@ export const nodeStateStyles = {
 
 // 默认节点样式配置
 export const defaultNode = {
-  type: 'rect',
+  type: 'rectangle-node',
   style: {
     fill: '#fff',
     stroke: '#333',

@@ -1,6 +1,6 @@
 import G6 from '@antv/g6';
 import { graphConfig } from './config';
-import { registerImageNode, registerTextNode } from './nodes';
+import { registerImageNode, registerTextNode, registerRectangleNode } from './nodes';
 import { bindNodeEvents, bindEdgeEvents, bindCanvasEvents, bindResizeEvents, bindPasteEvents } from './events';
 import { Toolbar } from './toolbar';
 import { ContextMenu } from './contextMenu';
@@ -17,6 +17,7 @@ graph.set('currentMode', 'default');
 // 注册自定义节点
 registerImageNode(G6);
 registerTextNode(G6);
+registerRectangleNode(G6);
 
 // 初始化各个模块
 const navigation = new Navigation(graph);
