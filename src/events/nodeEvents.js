@@ -1,7 +1,6 @@
 import { sizes } from '../config';
 import { updateSelection } from './utils';
-import { Image } from 'antd';
-import 'antd/dist/reset.css';
+import { showImagePreview } from '../components/ImagePreview';
 
 // 跟踪鼠标位置和调整大小状态
 let mousePosition = { x: 0, y: 0 };
@@ -56,22 +55,9 @@ export const bindNodeEvents = (graph) => {
     // 处理图片节点的预览
     if (model.type === 'image-node' && model.img) {
       console.log('打开图片预览');
-      // 创建一个临时的预览 div
-      const previewDiv = document.createElement('div');
-      document.body.appendChild(previewDiv);
-      
-      // 使用 Ant Design 的 Image 预览功能
+      // 使用新的预览组件
       const imgSrc = model.img;
-      const previewInstance = Image.preview({
-        src: imgSrc,
-        visible: true,
-        onVisibleChange: (visible) => {
-          if (!visible) {
-            // 当预览关闭时，移除临时 div
-            document.body.removeChild(previewDiv);
-          }
-        }
-      });
+      showImagePreview(imgSrc);
       // 阻止事件继续传播
       ev.preventDefault();
       ev.stopPropagation();

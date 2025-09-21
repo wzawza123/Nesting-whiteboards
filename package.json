@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@antv/g6": "^4.8.24",
-    "antd": "^5.27.4"
+    "antd": "^5.27.4",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
     "vite": "^5.0.0"
