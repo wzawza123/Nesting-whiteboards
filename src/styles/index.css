@@ -101,6 +101,39 @@
   background: rgba(255, 255, 255, 0.2) !important;
 }
 
+/* 状态栏样式 */
+.status-bar {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 200px;
+  text-align: center;
+}
+
+.status-bar.saved {
+  background-color: #f6ffed;
+  color: #52c41a;
+  border: 1px solid #b7eb8f;
+}
+
+.status-bar.unsaved {
+  background-color: #fff2e8;
+  color: #fa8c16;
+  border: 1px solid #ffd591;
+}
+
+.status-bar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 /* 节点编辑器样式 */
 .node-editor {
   font-family: Arial, sans-serif;

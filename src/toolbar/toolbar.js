@@ -106,7 +106,7 @@ export class Toolbar {
     });
 
     // 保存按钮事件
-    document.getElementById('saveGraph').addEventListener('click', () => {
+    document.getElementById('saveGraph').addEventListener('click', async () => {
       this.graph.emit('saveGraph');
     });
 
