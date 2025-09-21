@@ -11,23 +11,24 @@
   top: 10px;
   left: 10px;
   background: white;
-  padding: 10px;
+  padding: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
 .toolbar button {
-  margin: 0 5px;
-  padding: 5px 10px;
+  margin: 0 8px;
+  padding: 8px 16px;
   cursor: pointer;
+  font-size: 18px; /* 增大工具栏按钮字体 */
 }
 
 .toolbar .separator {
   display: inline-block;
   width: 1px;
-  height: 20px;
+  height: 24px; /* 增大分隔符高度 */
   background: #ccc;
-  margin: 0 10px;
+  margin: 0 12px;
   vertical-align: middle;
 }
 
@@ -35,7 +36,8 @@
   background-color: #1890ff;
   color: white;
   border: none;
-  padding: 5px 15px;
+  padding: 8px 20px;
+  font-size: 18px; /* 增大保存/加载按钮字体 */
 }
 
 #saveGraph:hover, #loadGraph:hover {
@@ -45,7 +47,7 @@
 /* 节点编辑器样式 */
 .node-editor {
   font-family: Arial, sans-serif;
-  font-size: 14px;
+  font-size: 20px; /* 增大编辑器字体 */
   background: white;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   outline: none;
@@ -63,19 +65,19 @@
   border: 1px solid #e8e8e8;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  padding: 4px 0;
-  min-width: 160px;
+  padding: 6px 0;
+  min-width: 200px; /* 增大菜单宽度 */
   z-index: 1000;
 }
 
 .menu-item {
-  padding: 8px 16px;
+  padding: 10px 20px; /* 增大菜单项内边距 */
   cursor: pointer;
   display: flex;
   align-items: center;
   position: relative;
   color: #333;
-  font-size: 14px;
+  font-size: 18px; /* 增大菜单项字体 */
   transition: all 0.3s;
 }
 
@@ -85,8 +87,9 @@
 }
 
 .menu-icon {
-  margin-right: 8px;
+  margin-right: 12px;
   font-style: normal;
+  font-size: 20px; /* 增大图标字体 */
 }
 
 .menu-item[data-action="font-size"]:hover .submenu,
@@ -103,7 +106,7 @@
   border: 1px solid #e8e8e8;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  min-width: 140px;
+  min-width: 180px; /* 增大子菜单宽度 */
   margin-left: 2px;
 }
 
@@ -112,15 +115,15 @@
 }
 
 .submenu .menu-item {
-  padding-left: 12px;
+  padding-left: 16px;
 }
 
 .color-dot {
   display: inline-block;
-  width: 14px;
-  height: 14px;
+  width: 18px; /* 增大颜色点大小 */
+  height: 18px; /* 增大颜色点大小 */
   border-radius: 50%;
-  margin-right: 8px;
+  margin-right: 12px;
   border: 1px solid rgba(0,0,0,0.1);
   vertical-align: middle;
 }
@@ -146,34 +149,34 @@
   left: 50%;
   transform: translateX(-50%);
   background: white;
-  padding: 12px 24px;
+  padding: 16px 32px;
   border: 1px solid #e8e8e8;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   font-family: Arial, sans-serif;
   z-index: 1000;
   text-align: center;
-  min-width: 300px;
+  min-width: 400px; /* 增大导航栏宽度 */
 }
 
 .nav-path {
   color: #666;
-  font-size: 16px;
+  font-size: 20px; /* 增大导航路径字体 */
   line-height: 1.5;
 }
 
 .nav-separator {
   color: #999;
-  margin: 0 12px;
-  font-size: 18px;
+  margin: 0 16px;
+  font-size: 22px; /* 增大分隔符字体 */
 }
 
 .nav-node {
   color: #1890ff;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 20px; /* 增大导航节点字体 */
   cursor: pointer;
-  padding: 2px 6px;
+  padding: 4px 10px;
   border-radius: 4px;
   transition: all 0.3s;
 }
@@ -186,12 +189,30 @@
 .nav-current {
   color: #333;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 20px; /* 增大当前节点字体 */
   cursor: default;
-  padding: 2px 6px;
+  padding: 4px 10px;
 }
 
 #navigation-bar:hover {
   box-shadow: 0 4px 16px rgba(0,0,0,0.12);
   transition: box-shadow 0.3s ease;
+}
+
+/* 返回按钮样式 */
+#backButton {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  display: none;
+  padding: 10px 20px; /* 增大按钮内边距 */
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  font-size: 18px; /* 增大返回按钮字体 */
+  font-weight: 500;
 }

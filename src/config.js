@@ -14,17 +14,17 @@ export const defaultNode = {
   style: {
     fill: '#fff',
     stroke: '#333',
-    radius: 6,
+    radius: 8,  // 稍微增大圆角
     lineWidth: 1.5,
   },
   labelCfg: {
     style: {
       fill: '#333',
-      fontSize: 16,
+      fontSize: 20,
       fontFamily: 'Arial',
     },
   },
-  size: [160, 80],
+  size: [200, 100],  // 增大默认矩形大小，从 [160, 80] 改为 [200, 100]
 };
 
 // 默认边样式配置
@@ -74,13 +74,13 @@ export const colors = {
 
 // 尺寸配置
 export const sizes = {
-  controlPoint: 8,
-  minNodeSize: 30,
-  maxImageSize: 200,
+  controlPoint: 10,  // 增大控制点大小
+  minNodeSize: 50,   // 增大最小节点大小
+  maxImageSize: 250, // 增大最大图片大小
   padding: {
-    small: 4,
-    medium: 8,
-    large: 16,
+    small: 6,
+    medium: 12,
+    large: 24,
   },
 };
 
@@ -90,9 +90,9 @@ export const styleConfig = {
   shadowBlur: 10,
   borderRadius: 4,
   fontSize: {
-    small: 12,
-    medium: 16,
-    large: 20,
-    extraLarge: 24,
+    small: 16,
+    medium: 20,
+    large: 24,
+    extraLarge: 28,
   },
 };
