@@ -210,22 +210,173 @@ export class FileManager {
     
     // 节点添加事件
     this.graph.on('afteradditem', (e) => {
-      if (e.item && (e.item.getType() === 'node' || e.item.getType() === 'edge')) {
-        this.markAsModified();
+      if (e.item) {
+        try {
+          // 检查e.item是否有getType方法
+          if (typeof e.item.getType === 'function') {
+            const itemType = e.item.getType();
+            if (itemType === 'node' || itemType === 'edge') {
+              this.markAsModified();
+            }
+          } else {
+            // 尝试其他方式获取项目类型
+            let itemType = null;
+            
+            // 方法1: 检查e.item的类型属性
+            if (e.item.type) {
+              itemType = e.item.type;
+            }
+            // 方法2: 检查e.item的itemType属性
+            else if (e.item.itemType) {
+              itemType = e.item.itemType;
+            }
+            // 方法3: 检查e.item的getItemType方法
+            else if (typeof e.item.getItemType === 'function') {
+              itemType = e.item.getItemType();
+            }
+            // 方法4: 检查e.item的getModel方法返回的type
+            else if (typeof e.item.getModel === 'function') {
+              try {
+                const model = e.item.getModel();
+                if (model && model.type) {
+                  itemType = model.type;
+                }
+              } catch (modelError) {
+                console.warn('获取模型失败:', modelError);
+              }
+            }
+            
+            // 如果找到了类型，检查是否为节点或边
+            if (itemType === 'node' || itemType === 'edge' || itemType === 'rectangle-node' || itemType === 'text-only' || itemType === 'image-node') {
+              this.markAsModified();
+            } else {
+              // 如果无法确定类型，仍然标记为已修改（保守策略）
+              this.markAsModified();
+            }
+          }
+        } catch (error) {
+          // 如果item已被销毁，仍然标记为已修改
+          console.warn('添加节点时获取类型失败，但仍标记为已修改:', error);
+          this.markAsModified();
+        }
       }
     });
 
     // 节点删除事件
     this.graph.on('afterremoveitem', (e) => {
-      if (e.item && (e.item.getType() === 'node' || e.item.getType() === 'edge')) {
-        this.markAsModified();
+      if (e.item) {
+        try {
+          // 检查e.item是否有getType方法
+          if (typeof e.item.getType === 'function') {
+            const itemType = e.item.getType();
+            if (itemType === 'node' || itemType === 'edge') {
+              this.markAsModified();
+            }
+          } else {
+            // 尝试其他方式获取项目类型
+            let itemType = null;
+            
+            // 方法1: 检查e.item的类型属性
+            if (e.item.type) {
+              itemType = e.item.type;
+            }
+            // 方法2: 检查e.item的itemType属性
+            else if (e.item.itemType) {
+              itemType = e.item.itemType;
+            }
+            // 方法3: 检查e.item的getItemType方法
+            else if (typeof e.item.getItemType === 'function') {
+              itemType = e.item.getItemType();
+            }
+            // 方法4: 检查e.item的getModel方法返回的type
+            else if (typeof e.item.getModel === 'function') {
+              try {
+                const model = e.item.getModel();
+                if (model && model.type) {
+                  itemType = model.type;
+                }
+              } catch (modelError) {
+                console.warn('获取模型失败:', modelError);
+              }
+            }
+            
+            // 如果找到了类型，检查是否为节点或边
+            if (itemType === 'node' || itemType === 'edge' || itemType === 'rectangle-node' || itemType === 'text-only' || itemType === 'image-node') {
+              this.markAsModified();
+            } else {
+              // 如果无法确定类型，仍然标记为已修改（保守策略）
+              console.warn('无法确定删除项目的类型，但仍标记为已修改:', {
+                item: e.item,
+                itemType: itemType,
+                availableMethods: {
+                  hasType: 'type' in e.item,
+                  hasItemType: 'itemType' in e.item,
+                  hasGetItemType: typeof e.item.getItemType === 'function',
+                  hasGetModel: typeof e.item.getModel === 'function'
+                }
+              });
+              this.markAsModified();
+            }
+          }
+        } catch (error) {
+          // 如果item已被销毁，仍然标记为已修改
+          console.warn('删除节点时获取类型失败，但仍标记为已修改:', error);
+          this.markAsModified();
+        }
       }
     });
 
     // 节点更新事件（包括移动、调整大小、编辑标签、样式修改等）
     this.graph.on('afterupdateitem', (e) => {
-      if (e.item && (e.item.getType() === 'node' || e.item.getType() === 'edge')) {
-        this.markAsModified();
+      if (e.item) {
+        try {
+          // 检查e.item是否有getType方法
+          if (typeof e.item.getType === 'function') {
+            const itemType = e.item.getType();
+            if (itemType === 'node' || itemType === 'edge') {
+              this.markAsModified();
+            }
+          } else {
+            // 尝试其他方式获取项目类型
+            let itemType = null;
+            
+            // 方法1: 检查e.item的类型属性
+            if (e.item.type) {
+              itemType = e.item.type;
+            }
+            // 方法2: 检查e.item的itemType属性
+            else if (e.item.itemType) {
+              itemType = e.item.itemType;
+            }
+            // 方法3: 检查e.item的getItemType方法
+            else if (typeof e.item.getItemType === 'function') {
+              itemType = e.item.getItemType();
+            }
+            // 方法4: 检查e.item的getModel方法返回的type
+            else if (typeof e.item.getModel === 'function') {
+              try {
+                const model = e.item.getModel();
+                if (model && model.type) {
+                  itemType = model.type;
+                }
+              } catch (modelError) {
+                console.warn('获取模型失败:', modelError);
+              }
+            }
+            
+            // 如果找到了类型，检查是否为节点或边
+            if (itemType === 'node' || itemType === 'edge' || itemType === 'rectangle-node' || itemType === 'text-only' || itemType === 'image-node') {
+              this.markAsModified();
+            } else {
+              // 如果无法确定类型，仍然标记为已修改（保守策略）
+              this.markAsModified();
+            }
+          }
+        } catch (error) {
+          // 如果item已被销毁，仍然标记为已修改
+          console.warn('更新节点时获取类型失败，但仍标记为已修改:', error);
+          this.markAsModified();
+        }
       }
     });
 
