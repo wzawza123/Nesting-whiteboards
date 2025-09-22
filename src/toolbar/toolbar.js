@@ -55,8 +55,16 @@ export class Toolbar {
   deleteSelectedItem() {
     const selectedItem = this.graph.get('selectedItem');
     if (selectedItem) {
-      this.graph.removeItem(selectedItem);
-      this.graph.set('selectedItem', null);
+      try {
+        // 先清除选中状态，再删除节点
+        this.graph.setItemState(selectedItem, 'selected', false);
+        this.graph.removeItem(selectedItem);
+      } catch (error) {
+        console.warn('删除节点时出错:', error);
+      } finally {
+        // 无论删除是否成功，都要清除选中项引用
+        this.graph.set('selectedItem', null);
+      }
     }
   }
 
