@@ -6,6 +6,7 @@ import { Toolbar } from './toolbar';
 import { ContextMenu } from './contextMenu';
 import { Navigation } from './navigation';
 import { FileManager } from './io';
+import { NodeSearch, bindSearchEvents } from './search';
 import './styles/index.css';
 
 // 初始化图形实例
@@ -24,6 +25,7 @@ const navigation = new Navigation(graph);
 const contextMenu = new ContextMenu(graph);
 const toolbar = new Toolbar(graph);
 const fileManager = new FileManager(graph, navigation);
+const nodeSearch = new NodeSearch(graph, navigation);
 
 // 将上下文菜单实例保存到图形实例中
 graph.set('contextMenu', contextMenu);
@@ -34,6 +36,7 @@ bindEdgeEvents(graph);
 bindCanvasEvents(graph);
 bindResizeEvents(graph);
 bindPasteEvents(graph);
+bindSearchEvents(graph, nodeSearch);
 
 // 初始化渲染
 graph.data(navigation.currentGraphData);
