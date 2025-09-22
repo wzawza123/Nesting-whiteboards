@@ -24,8 +24,8 @@ export class ContextMenu {
     const fontSizeSubmenu = this.createSubmenu([
       { size: 12, label: 'Small (12px)' },
       { size: 16, label: 'Medium (16px)' },
-      { size: 20, label: 'Large (20px)' },
-      { size: 24, label: 'Extra Large (24px)' }
+      { size: 30, label: 'Large (30px)' },
+      { size: 40, label: 'Extra Large (40px)' }
     ]);
     fontSizeItem.appendChild(fontSizeSubmenu);
     menu.appendChild(fontSizeItem);
