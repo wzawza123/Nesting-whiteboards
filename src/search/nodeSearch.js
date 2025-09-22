@@ -1,3 +1,5 @@
+import { updateSelection } from '../events/utils.js';
+
 export class NodeSearch {
   constructor(graph, navigation) {
     this.graph = graph;
@@ -474,14 +476,17 @@ export class NodeSearch {
 
     console.log('🔍 [NodeSearch] 找到节点:', node.get('id'), node.getModel());
     
-    // 清除所有选择状态
-    this.graph.getNodes().forEach(n => {
-      this.graph.setItemState(n, 'selected', false);
-    });
+    // 使用updateSelection工具函数来正确管理选择状态
+    // 这样可以确保与现有的选择机制兼容
+    updateSelection(this.graph, node);
     
-    // 选中目标节点
-    this.graph.setItemState(node, 'selected', true);
-    console.log('🔍 [NodeSearch] 已选中节点:', nodeId);
+    // 验证选择状态是否正确设置
+    const selectedItem = this.graph.get('selectedItem');
+    console.log('🔍 [NodeSearch] 选择状态验证:', {
+      targetNodeId: nodeId,
+      selectedItemId: selectedItem ? selectedItem.get('id') : null,
+      selectionCorrect: selectedItem && selectedItem.get('id') === nodeId
+    });
     
     // 使用G6的focusItem方法进行居中，这比手动计算更可靠
     try {
@@ -533,6 +538,9 @@ export class NodeSearch {
   // 备用的手动居中方法
   fallbackCenterNode(node) {
     const model = node.getModel();
+    
+    // 首先使用updateSelection确保选择状态正确
+    updateSelection(this.graph, node);
     
     // 计算居中位置
     const width = this.graph.get('width');
