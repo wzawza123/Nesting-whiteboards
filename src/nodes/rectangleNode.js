@@ -80,7 +80,9 @@ export const registerRectangleNode = (G6) => {
             cursor: 'move',
           },
           name: 'label-text',
+          capture: false, // 关键：确保事件传递到父节点
         });
+        
       }
       
       return mainRect;
@@ -187,6 +189,10 @@ export const registerRectangleNode = (G6) => {
           fontSize: cfg.labelCfg?.style?.fontSize || 20,
           fontFamily: cfg.labelCfg?.style?.fontFamily || 'Arial',
         });
+        
+        // 确保capture属性设置为false
+        textShape.set('capture', false);
+        
       }
     },
 

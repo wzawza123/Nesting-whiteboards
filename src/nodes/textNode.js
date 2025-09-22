@@ -36,6 +36,7 @@ export const registerTextNode = (G6) => {
             cursor: 'move',
           },
           name: `text-line-${index}`,
+          capture: false, // 关键：确保事件传递到父节点
         });
         textShapes.push(textShape);
         
@@ -82,7 +83,11 @@ export const registerTextNode = (G6) => {
         lineHeight: lineHeight
       });
       
-      return textGroup;
+      // 关键修复：返回背景矩形作为主形状，而不是文本组
+      // 这样G6的拖拽机制就能正确识别拖拽目标
+      
+      
+      return backgroundRect;
     },
 
     update(cfg, node) {
@@ -122,6 +127,7 @@ export const registerTextNode = (G6) => {
               cursor: 'move',
             },
             name: `text-line-${index}`,
+            capture: false, // 关键：确保事件传递到父节点
           });
           
           // 计算最大宽度

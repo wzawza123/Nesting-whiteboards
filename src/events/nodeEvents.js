@@ -12,10 +12,12 @@ let resizeStartPoint = null;
 let resizeHandle = null;
 
 export const bindNodeEvents = (graph) => {
+
   // 节点点击事件
   graph.on('node:click', (ev) => {
     const node = ev.item;
     const currentMode = graph.get('currentMode');
+    
     
     if (currentMode === 'addEdge') {
       const edgeStartNode = graph.get('edgeStartNode');
@@ -87,10 +89,11 @@ export const bindNodeEvents = (graph) => {
     }
   });
 
-  // 节点鼠标按下事件（用于调整大小）
+  // 处理调整大小的逻辑（在mousedown事件中）
   graph.on('node:mousedown', (ev) => {
     const { item, target } = ev;
     const name = target.get('name');
+    
     
     if (name && name.startsWith('control-point-')) {
       isResizing = true;

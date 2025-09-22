@@ -74,15 +74,17 @@ export const startEditingLabel = (item, graph) => {
   // 处理输入事件
   textarea.addEventListener('blur', handleSubmit);
   textarea.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && e.ctrlKey) {
-      // Ctrl+Enter 提交
+    if (e.key === 'Enter' && !e.shiftKey) {
+      // Enter键完成编辑
       e.preventDefault();
       handleSubmit();
+    } else if (e.key === 'Enter' && e.shiftKey) {
+      // Shift+Enter换行，阻止事件冒泡到document级别
+      e.stopPropagation();
     } else if (e.key === 'Escape') {
       // Escape 取消
       e.preventDefault();
       handleCancel();
     }
-    // 普通Enter键用于换行，不做特殊处理
   });
 };

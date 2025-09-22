@@ -186,6 +186,11 @@ export class ContextMenu {
 
     // 按下回车键编辑
     document.addEventListener('keydown', (e) => {
+      // 如果正在输入文本，不处理快捷键
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        return;
+      }
+      
       const selectedItem = this.graph.get('selectedItem');
       if (e.key === 'Enter' && selectedItem && 
           selectedItem.getModel().type !== 'text-only') {
