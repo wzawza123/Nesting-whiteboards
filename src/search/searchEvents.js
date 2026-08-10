@@ -13,3 +13,4 @@ export const bindSearchEvents = (graph, nodeSearch) => {
     }
   });
 };
+
